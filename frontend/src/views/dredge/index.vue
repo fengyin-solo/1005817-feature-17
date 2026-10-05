@@ -24,6 +24,11 @@
       </span>
     </p>
 
+    <section v-if="reviewCount" class="review-queue">
+      <h3>格栅清污联动待复（{{ reviewCount }}）</h3>
+      <p class="queue-tip">格栅清污批量完工后，对应班组的清淤复核活已挂到本台账，状态为「待复核」，复核确认后转「已完工」。</p>
+    </section>
+
     <form class="filter-bar" @submit.prevent="reload">
       <label v-for="field in filterFields" :key="field" class="filter-item">
         <span>{{ field }}</span>
@@ -83,8 +88,8 @@ import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('dredge')
 const columns = ["清淤编号", "清淤管段", "淤积厚度", "清淤方式", "清淤班组", "清淤日期", "清淤量", "清淤状态"]
-const actions = ["提交清淤", "确认完工", "要求返工"]
-const statuses = ["待清淤", "清淤中", "已完工", "需返工"]
+const actions = ["提交清淤", "确认完工", "要求返工", "复核确认"]
+const statuses = ["待清淤", "清淤中", "已完工", "需返工", "待复核"]
 const stats = [{"label": "待清淤管段", "value": 0}, {"label": "清淤中管段", "value": 0}, {"label": "本月完工数", "value": 0}]
 
 const rows = ref<EntryRow[]>([])
@@ -97,6 +102,9 @@ const statusSummary = computed(() =>
     status,
     count: rows.value.filter((row) => String(row.status) === status).length,
   })),
+)
+const reviewCount = computed(() =>
+  rows.value.filter((row) => String(row.status) === '待复核').length,
 )
 
 function resetFilters() {

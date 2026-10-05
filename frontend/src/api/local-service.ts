@@ -47,7 +47,7 @@ export function runAction(key: string, id: number, action: string): ActionResult
   const updated: EntryRow = {
     ...rows[index],
     status: target,
-    pending: target !== lastStatus,
+    pending: target !== lastStatus && target !== '已完工',
     abnormal: NEGATIVE_ACTIONS.some((verb) => action.startsWith(verb)),
   }
   const next = [...rows]
